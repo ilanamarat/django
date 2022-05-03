@@ -1,3 +1,4 @@
+from tabnanny import verbose
 from django.db import models
 from django.dispatch import receiver
 from django.contrib.auth.models import User
@@ -52,7 +53,8 @@ class Address(models.Model):
   objects = models.Manager()
   addresses = AddressManager()
   class Meta:
-    verbose_name_plural= 'Addresses'
+    verbose_name_plural= 'Адресы'
+    verbose_name = 'Адрес'
   def __str__(self):
     return self.country
 
@@ -75,6 +77,9 @@ class UserProfile(models.Model):
 
   def __str__(self):
     return self.user.username
+  class Meta:
+    verbose_name_plural= 'Пользователи'
+    verbose_name = 'Пользователь'
 
 class Item(models.Model):
   title = models.CharField(max_length=100, default='No title', null=True, blank=True)
@@ -92,12 +97,35 @@ class Item(models.Model):
   
 class Electronics(Item):
   category = models.CharField(choices=GADGETS_CATEGORY, max_length=2, default='UN' )
+  manufacturer = models.TextField(max_length=300, null=True, blank=True)
+  class Meta:
+    verbose_name_plural= 'Электроники'
+    verbose_name = 'Электроника'
 
 class Books(Item):
   author= models.TextField(max_length=200,null=True, blank=True)
+  page_number= models.IntegerField(null=True, blank=True)
+  publisher = models.TextField(max_length=300, null=True, blank=True)
+
+  class Meta:
+    verbose_name_plural= 'Книги'
+    verbose_name = 'Книга'
 
 class SportItems(Item):
+  manufacturer = models.TextField(max_length=200,null=True, blank=True)
   size = models.CharField(max_length=10,null=True, blank=True)
+  class Meta:
+    verbose_name_plural= 'Спортивный инвентарь'
+    verbose_name = 'Спортивный инвентарь'
+
+class Basket(models.Model):
+  user = models.ForeignKey(UserProfile, on_delete=models.CASCADE,null=True, blank=True)
+  items = models.ManyToManyField(Item)
+  def __str__(self):
+    return self.user.user.username
+  class Meta:
+    verbose_name_plural= 'Корзины'
+    verbose_name = 'Корзина'
 
 class OrderItem(models.Model):
   item = models.ForeignKey(Item, on_delete=models.CASCADE,null=True, blank=True)
@@ -108,10 +136,12 @@ class OrderItem(models.Model):
     return self.item.title
   class Meta:
     abstract= True
+  
 
 
 class Order(OrderItem):
   delivery_address = models.ForeignKey(Address, on_delete=models.CASCADE)
+  items = models.ManyToManyField(OrderItem)
   ordered = models.BooleanField(default=False)
   ordered_date = models.DateTimeField()
   received = models.BooleanField(default=False)
@@ -121,10 +151,9 @@ class Order(OrderItem):
   orders = OrderManager()
   def __str__(self):
     return self.id
+
+  class Meta:
+    verbose_name_plural= 'Orders'
+    verbose_name = 'Order'
   
 
-class Basket(models.Model):
-  user = models.ForeignKey(UserProfile, on_delete=models.CASCADE,null=True, blank=True)
-  items = models.ManyToManyField(Item)
-  def __str__(self):
-    return self.user.user.username
