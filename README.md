@@ -1,7 +1,7 @@
 # django
 Made for Backend Django course
 
-Detailed information about the structure of the project with the class  diagram is in "E-commerce websie.pdf" file.
+Detailed information about the structure of the project with the class  diagram is in "E-commerce website.pdf" file.
 
 
 
