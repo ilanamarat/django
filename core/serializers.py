@@ -14,16 +14,16 @@ class FileSerializer(serializers.ModelSerializer):
         model = FileModel
         fields = '__all__'
 
-class ElectronicsSerializer(serializers.ModelSerializer):
-    # inheritance
+class ItemSerializer(FileSerializer):
     storage_address= AddressSerializer()
-    # inheritance
-    image = FileSerializer()
+
+class ElectronicsSerializer(ItemSerializer):
+    
     class Meta: 
         model = Electronics
         fields = '__all__'
 
-class BooksSerializer(serializers.Serializer):
+class BooksSerializer(ItemSerializer):
     id=serializers.FloatField()
     title = serializers.CharField(max_length=100)
     price = serializers.FloatField()
@@ -31,16 +31,10 @@ class BooksSerializer(serializers.Serializer):
     author= serializers.CharField(max_length=200)
     page_number= serializers.IntegerField()
     publisher = serializers.CharField(max_length=300)
-
-    storage_address= AddressSerializer()
-    image = FileSerializer()
     
 
-class SportItemsSerializer(serializers.ModelSerializer):
-    # inheritance
-    storage_address= AddressSerializer()
-    # inheritance
-    image = FileSerializer()
+class SportItemsSerializer(ItemSerializer):
+
     class Meta: 
         model = SportItems
         fields = '__all__'
